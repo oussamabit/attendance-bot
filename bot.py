@@ -263,10 +263,6 @@ async def handle_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
 import asyncio
 
 async def main():
-    # Start web server in background thread (required by Render free tier)
-    threading.Thread(target=run_web_server, daemon=True).start()
-    print(f"✅ Web server started on port {PORT}")
-
     app = (
         ApplicationBuilder()
         .token(TOKEN)
@@ -280,8 +276,16 @@ async def main():
     app.add_handler(CommandHandler("report",   report_cmd))
     app.add_handler(CallbackQueryHandler(handle_buttons))
 
+    await app.initialize()
+    await app.updater.start_polling(drop_pending_updates=True)
+    await app.start()
     print("✅ البوت يعمل…")
-    await app.run_polling(drop_pending_updates=True)
 
-if __name__ == "__main__":
-    asyncio.run(main())
+    # Keep running forever
+    await asyncio.Event().wait()
+
+# Start web server in background thread BEFORE asyncio loop
+threading.Thread(target=run_web_server, daemon=True).start()
+print(f"✅ Web server started on port {PORT}")
+
+asyncio.run(main())
