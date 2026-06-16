@@ -260,15 +260,28 @@ async def handle_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # ── Run ───────────────────────────────────────────────────────────────────────
 
-# Start web server in background thread (required by Render free tier)
-threading.Thread(target=run_web_server, daemon=True).start()
-print(f"✅ Web server started on port {PORT}")
+import asyncio
 
-app = ApplicationBuilder().token(TOKEN).connect_timeout(30).read_timeout(30).write_timeout(30).build()
-app.add_handler(CommandHandler("start",    start))
-app.add_handler(CommandHandler("sections", sections_cmd))
-app.add_handler(CommandHandler("report",   report_cmd))
-app.add_handler(CallbackQueryHandler(handle_buttons))
+async def main():
+    # Start web server in background thread (required by Render free tier)
+    threading.Thread(target=run_web_server, daemon=True).start()
+    print(f"✅ Web server started on port {PORT}")
 
-print("✅ البوت يعمل…")
-app.run_polling(drop_pending_updates=True)
+    app = (
+        ApplicationBuilder()
+        .token(TOKEN)
+        .connect_timeout(30)
+        .read_timeout(30)
+        .write_timeout(30)
+        .build()
+    )
+    app.add_handler(CommandHandler("start",    start))
+    app.add_handler(CommandHandler("sections", sections_cmd))
+    app.add_handler(CommandHandler("report",   report_cmd))
+    app.add_handler(CallbackQueryHandler(handle_buttons))
+
+    print("✅ البوت يعمل…")
+    await app.run_polling(drop_pending_updates=True)
+
+if __name__ == "__main__":
+    asyncio.run(main())
