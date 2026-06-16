@@ -6,7 +6,6 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from datetime import date
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
-from telegram.request import HTTPXRequest
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
@@ -265,8 +264,7 @@ async def handle_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
 threading.Thread(target=run_web_server, daemon=True).start()
 print(f"✅ Web server started on port {PORT}")
 
-request = HTTPXRequest(connect_timeout=30, read_timeout=30, write_timeout=30)
-app = ApplicationBuilder().token(TOKEN).request(request).build()
+app = ApplicationBuilder().token(TOKEN).connect_timeout(30).read_timeout(30).write_timeout(30).build()
 app.add_handler(CommandHandler("start",    start))
 app.add_handler(CommandHandler("sections", sections_cmd))
 app.add_handler(CommandHandler("report",   report_cmd))
