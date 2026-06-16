@@ -1,0 +1,16 @@
+services:
+  - type: worker
+    name: attendance-bot
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot.py
+    plan: free
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: SPREADSHEET_ID
+        sync: false
+      - key: ADMIN_IDS
+        sync: false
+      - key: GOOGLE_CREDS_JSON
+        sync: false
