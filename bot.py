@@ -119,7 +119,7 @@ async def sections_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         sections = get_sections()
     except Exception as e:
-        await msg.edit_text(f"❌ تعذّر تحميل الأقسام:\n{e}")
+        await msg.edit_text(f"❌ تعذّر تحميل الأقسام:\n{type(e).__name__}: {e}")
         return
 
     if not sections:
@@ -144,7 +144,7 @@ async def report_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         report = get_today_report()
     except Exception as e:
-        await msg.edit_text(f"❌ خطأ في تحميل التقرير:\n{e}")
+        await msg.edit_text(f"❌ خطأ في تحميل التقرير:\n{type(e).__name__}: {e}")
         return
     await msg.edit_text(report, parse_mode="Markdown")
 
@@ -162,7 +162,7 @@ async def handle_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             sections = get_sections()
         except Exception as e:
-            await query.edit_message_text(f"❌ تعذّر تحميل الطلاب:\n{e}")
+            await query.edit_message_text(f"❌ تعذّر تحميل الطلاب:\n{type(e).__name__}: {e}")
             return
 
         students = sections.get(section, [])
@@ -224,7 +224,7 @@ async def handle_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             save_attendance(teacher_name, section, absents)
         except Exception as e:
-            await query.edit_message_text(f"❌ فشل الحفظ:\n{e}")
+            await query.edit_message_text(f"❌ فشل الحفظ:\n{type(e).__name__}: {e}")
             return
 
         if absents:
